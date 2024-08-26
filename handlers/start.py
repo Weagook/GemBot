@@ -14,7 +14,14 @@ start_message_text = '''Enter your name, it will be displayed in the Aviator Kin
 
 
 @router.message(Command('start'))
-async def start_command(message: Message, state: FSMContext):
-    DATABASE.add_user_by_id(message.from_user.id)
+async def start_command(message: Message, state: FSMContext, command: Command):
+    referal_code = command.args
+    if referal_code:
+        if DATABASE.is_exists(referal_code):
+            DATABASE.add_follower(referal_code, message.from_user.id)
+    
+    if not DATABASE.is_exists(message.from_user.id):
+        DATABASE.add_user_by_id(message.from_user.id)
+
     await state.set_state(ALL_STATES['register'].waiting_input_name)
     await message.answer_photo(photo=IMAGE_ID, caption=start_message_text)

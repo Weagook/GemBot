@@ -36,3 +36,8 @@ def create_trial_kb_6():
     button3 = InlineKeyboardButton(text='x10', callback_data='trial_6')
     keyboard = InlineKeyboardMarkup(inline_keyboard=[[button1, button2, button3]])
     return keyboard
+
+def create_complete_kb():
+    button = InlineKeyboardButton(text='Next try', callback_data='complete_tutorial')
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[[button]])
+    return keyboard
