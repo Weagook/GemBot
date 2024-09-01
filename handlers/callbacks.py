@@ -2,11 +2,11 @@ from aiogram import Router, Bot
 from aiogram.types import CallbackQuery
 from bot_manager import BotManager
 from keyboards import KEYBOARDS
-from database import DATABASE
+from database.async_database import AsyncDatabase
 from utils import referal_link
 import events
+from config import IMAGES, VIDEO
 
-IMAGE_ID = 'AgACAgIAAxkBAAMdZsZcHwTsyBWs5I89uop-Xu2hYBgAArnbMRsr_DlKxGHQvWtGL38BAAMCAAN4AAM1BA'
 trial_message_1 = '''The King shares the simple rules for the top aviators' race:
 
 💎 30 free spins to conquer the Sky
@@ -38,7 +38,7 @@ The King is pleased with your success!'''
 trial_message_7 = '''❌❌❌
 Unsuccessful attempt, but no worries, you'll get it next time!'''
 
-complete_tutorial_message = '''👑LOBBY👑
+lobby_message = '''👑LOBBY👑
 
 Hello, [NAME]!
 
@@ -72,41 +72,54 @@ Share the link in chats and social media to earn as much as possible! 💵'''
 refferal_message = '''Your referrals are displayed here:
 [PLACEHOLDER]'''
 
+payout_info_message = '''Why do we transfer payouts to a crypto wallet? Payouts in cryptocurrency have the following advantages:
+
+✅ Instant payouts with no delays
+✅ Your money is always secure and accessible only to you
+✅ No banking fees
+✅ USDT can be converted to any currency and used instantly
+✅ Payouts are available to any crypto wallets. Payouts are made to accounts opened in USDT (TRC20)
+✅ We recommend registering with the most popular crypto wallets: Binance Wallet, Coinbase Wallet, ByBit Wallet, and other
+
+✉️In case you rank in the weekly TOP-10 players, our manager will contact you to request your account number for the payout. The login of our manager is: @AviatorKingManager'''
+
 bot = BotManager()
 router = Router()
+db = AsyncDatabase()
 
 @router.callback_query()
 async def handle_callback(query: CallbackQuery):
     user_id = query.from_user.id
     if query.data == 'next_button':
-        await bot.send_photo(chat_id=user_id, photo=IMAGE_ID, caption=trial_message_1, reply_markup=KEYBOARDS['trial_keyboard_1'])
+        await bot.send_video(chat_id=user_id, video=VIDEO['next'], caption=trial_message_1, reply_markup=KEYBOARDS['trial_keyboard_1'])
     if query.data == 'trial_1':
-        await bot.send_photo(chat_id=user_id, photo=IMAGE_ID, caption=trial_message_2, reply_markup=KEYBOARDS['trial_keyboard_2'])
+        await bot.send_video(chat_id=user_id, video=VIDEO['x5'], caption=trial_message_2, reply_markup=KEYBOARDS['trial_keyboard_2'])
     if query.data == 'trial_2':
-        await bot.send_photo(chat_id=user_id, photo=IMAGE_ID, caption=trial_message_3, reply_markup=KEYBOARDS['trial_keyboard_3'])
+        await bot.send_video(chat_id=user_id, video=VIDEO['next_try'], caption=trial_message_3, reply_markup=KEYBOARDS['trial_keyboard_3'])
     if query.data == 'trial_3':
-        await bot.send_photo(chat_id=user_id, photo=IMAGE_ID, caption=trial_message_4, reply_markup=KEYBOARDS['trial_keyboard_4'])
+        await bot.send_video(chat_id=user_id, video=VIDEO['x3'], caption=trial_message_4, reply_markup=KEYBOARDS['trial_keyboard_4'])
     if query.data == 'trial_4':
-        await bot.send_photo(chat_id=user_id, photo=IMAGE_ID, caption=trial_message_5, reply_markup=KEYBOARDS['trial_keyboard_5'])
+        await bot.send_message(chat_id=user_id, text=trial_message_5, reply_markup=KEYBOARDS['trial_keyboard_5'])
     if query.data == 'trial_5':
-        await bot.send_photo(chat_id=user_id, photo=IMAGE_ID, caption=trial_message_6, reply_markup=KEYBOARDS['trial_keyboard_6'])
+        await bot.send_message(chat_id=user_id, text=trial_message_6, reply_markup=KEYBOARDS['trial_keyboard_6'])
     if query.data == 'trial_6':
-        await bot.send_photo(chat_id=user_id, photo=IMAGE_ID, caption=trial_message_7, reply_markup=KEYBOARDS['complete_tutorial'])
+        await bot.send_message(chat_id=user_id, text=trial_message_7, reply_markup=KEYBOARDS['complete_tutorial'])
     if query.data in ['complete_tutorial', 'back', 'lobby']:
-        await events.entry_lobby(bot, IMAGE_ID, DATABASE, user_id, complete_tutorial_message, KEYBOARDS)
+        await events.entry_lobby(bot, IMAGES['lobby'], db, user_id, lobby_message, KEYBOARDS)
     if query.data == 'bonus':
-        referal_link = DATABASE.get_link(user_id)
+        referal_link = await db.get_user_property(telegram_id=user_id, property_name='referral_link')
         cur_message = bonus_message.replace('[REFERRAL_LINK]', referal_link)
-        await bot.send_photo(chat_id=user_id, photo=IMAGE_ID, caption=cur_message, reply_markup=KEYBOARDS['bonus'])
+        await bot.send_photo(chat_id=user_id, photo=IMAGES['bonus'], caption=cur_message, reply_markup=KEYBOARDS['bonus'])
     if query.data == 'personal_link':
-        await events.entry_personal(bot, IMAGE_ID, DATABASE, user_id, personal_message, KEYBOARDS)
+        await events.entry_personal(bot, db, user_id, personal_message, KEYBOARDS)
     if query.data == 'your_referrals':
-        await events.entry_referrals(bot, IMAGE_ID, DATABASE, user_id, refferal_message, KEYBOARDS)
+        await events.entry_referrals(bot, db, user_id, refferal_message, KEYBOARDS)
     if query.data == 'play':
-        await events.entry_choice_play(bot, DATABASE, user_id, IMAGE_ID, KEYBOARDS)
+        await events.entry_choice_play(bot, user_id, KEYBOARDS)
     if query.data == 'leaderboard':
-        await events.entry_leaderboard(bot, IMAGE_ID, DATABASE, user_id, KEYBOARDS)
+        await events.entry_leaderboard(bot, IMAGES['leaderboard'], db, user_id, KEYBOARDS)
     if query.data in ['play_x3', 'play_x5', 'play_x10']:
-        await events.play_roll(bot, DATABASE, user_id, KEYBOARDS, query)
-        
+        await events.play_roll(bot, db, user_id, KEYBOARDS, query)
+    if query.data == 'payout_info':
+        await events.entry_payout_info(bot, IMAGES['payout_info'], db, user_id, payout_info_message, KEYBOARDS)
         

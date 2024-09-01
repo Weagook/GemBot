@@ -2,7 +2,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
 def create_trial_kb_1():
-    button = InlineKeyboardButton(text='Trial', callback_data='trial_1')
+    button = InlineKeyboardButton(text="Let's try", callback_data='trial_1')
     keyboard = InlineKeyboardMarkup(inline_keyboard=[[button]])
     return keyboard
 

@@ -1,4 +1,4 @@
-async def entry_lobby(bot, IMAGE_ID, database, user_id, message, KEYBOARDS):
+async def entry_payout_info(bot, IMAGE_ID, database, user_id, message, KEYBOARDS):
     all_user_data = await database.get_user_by_telegram_id(user_id)
     username = all_user_data['name']
     spins = all_user_data['spins_count']
