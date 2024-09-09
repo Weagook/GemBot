@@ -89,6 +89,11 @@ class AsyncDatabase:
 
                 if inviter:
                     inviter.followers += 1
+
+                    new_status = self._determine_status(inviter.followers)
+                    if new_status:
+                        inviter.status = new_status
+
                     try:
                         await session.commit()
                         return True
@@ -305,3 +310,20 @@ class AsyncDatabase:
                     for user in users
                 ]
                 return followers
+            
+    def _determine_status(self, followers_count: int) -> str:
+        """
+        Возвращает новый статус в зависимости от количества рефералов.
+
+        :param followers_count: Количество рефералов
+        :return: Статус пользователя (Bronze, Silver, Gold, Platinum) или None, если статус не изменяется
+        """
+        if followers_count >= 100:
+            return "Platinum"
+        elif followers_count >= 50:
+            return "Gold"
+        elif followers_count >= 10:
+            return "Silver"
+        elif followers_count >= 3:
+            return "Bronze"
+        return None
