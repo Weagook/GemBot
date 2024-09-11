@@ -45,6 +45,15 @@ class WeeklyReport:
                 file_path = 'user_report.csv'
                 df.to_csv(file_path, index=False, encoding='utf-8')
                 return file_path
+            
+    async def reset_points(self):
+        """
+        Сбрасывает points у всех пользователей.
+        """
+        async with self.session() as session:
+            async with session.begin():
+                await session.execute(update(User).values(points=0))
+                await session.commit()
 
     async def send_report(self):
         """
@@ -64,6 +73,9 @@ class WeeklyReport:
         # Удаляем файл после отправки
         if os.path.exists(csv_file_path):
             os.remove(csv_file_path)
+
+        # Сбрасываем points у всех пользователей
+        await self.reset_points()
 
 
 async def main():

@@ -93,13 +93,13 @@ async def handle_callback(query: CallbackQuery):
     if query.data == 'next_button':
         await bot.send_video(chat_id=user_id, video=VIDEO['next'], caption=trial_message_1, reply_markup=KEYBOARDS['trial_keyboard_1'])
     if query.data == 'trial_1':
-        await bot.send_video(chat_id=user_id, video=VIDEO['x5'], caption=trial_message_2, reply_markup=KEYBOARDS['trial_keyboard_2'])
+        await bot.send_video(chat_id=user_id, video=VIDEO['next_try'], caption=trial_message_2, reply_markup=KEYBOARDS['trial_keyboard_2'])
     if query.data == 'trial_2':
-        await bot.send_video(chat_id=user_id, video=VIDEO['next_try'], caption=trial_message_3, reply_markup=KEYBOARDS['trial_keyboard_3'])
+        await bot.send_photo(chat_id=user_id, photo=IMAGES['win'], caption=trial_message_3, reply_markup=KEYBOARDS['trial_keyboard_3'])
     if query.data == 'trial_3':
-        await bot.send_video(chat_id=user_id, video=VIDEO['x3'], caption=trial_message_4, reply_markup=KEYBOARDS['trial_keyboard_4'])
+        await bot.send_video(chat_id=user_id, video=VIDEO['next_try'], caption=trial_message_4, reply_markup=KEYBOARDS['trial_keyboard_4'])
     if query.data == 'trial_4':
-        await bot.send_message(chat_id=user_id, text=trial_message_5, reply_markup=KEYBOARDS['trial_keyboard_5'])
+        await bot.send_photo(chat_id=user_id, photo=IMAGES['win'], caption=trial_message_5, reply_markup=KEYBOARDS['trial_keyboard_5'])
     if query.data == 'trial_5':
         await bot.send_message(chat_id=user_id, text=trial_message_6, reply_markup=KEYBOARDS['trial_keyboard_6'])
     if query.data == 'trial_6':
