@@ -2,6 +2,7 @@ import asyncio
 import pandas as pd
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy import update
 from database.models import User
 from database.database import AsyncSessionLocal
 from aiogram import Bot

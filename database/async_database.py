@@ -235,7 +235,7 @@ class AsyncDatabase:
 
     async def add_spins(self, telegram_id: int, spins: int) -> bool:
         """
-        Добавляет указанное количество спинов пользователю по telegram_id.
+        Добавляет указанное количество спинов пользователю по telegram_id, если их количество не превышает 30.
 
         :param telegram_id: ID пользователя в Telegram
         :param spins: Количество спинов для добавления
@@ -247,7 +247,16 @@ class AsyncDatabase:
                 user = result.scalars().first()
 
                 if user:
+                    # Проверяем, если спинов уже больше 30, не добавляем новые
+                    if user.spins_count and user.spins_count >= 30:
+                        return False
+                    
+                    # Иначе добавляем спины
                     user.spins_count = (user.spins_count or 0) + spins
+                    # Убедимся, что не превысим лимит в 30 спинов
+                    if user.spins_count > 30:
+                        user.spins_count = 30
+                    
                     try:
                         await session.commit()
                         return True

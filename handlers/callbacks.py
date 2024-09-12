@@ -5,7 +5,8 @@ from keyboards import KEYBOARDS
 from database.async_database import AsyncDatabase
 from utils import referal_link
 import events
-from config import IMAGES, VIDEO
+from config import IMAGES, VIDEO, ANIMATION
+from random import randint
 
 trial_message_1 = '''The King shares the simple rules for the top aviators' race:
 
@@ -91,18 +92,24 @@ db = AsyncDatabase()
 async def handle_callback(query: CallbackQuery):
     user_id = query.from_user.id
     if query.data == 'next_button':
-        await bot.send_video(chat_id=user_id, video=VIDEO['next'], caption=trial_message_1, reply_markup=KEYBOARDS['trial_keyboard_1'])
+        await bot.send_animation(chat_id=user_id, animation=ANIMATION['next'], caption=trial_message_1, reply_markup=KEYBOARDS['trial_keyboard_1'])
     if query.data == 'trial_1':
-        await bot.send_video(chat_id=user_id, video=VIDEO['next_try'], caption=trial_message_2, reply_markup=KEYBOARDS['trial_keyboard_2'])
+        await bot.send_animation(chat_id=user_id, animation=ANIMATION['next_try'], caption=trial_message_2, reply_markup=KEYBOARDS['trial_keyboard_2'])
     if query.data == 'trial_2':
+        await bot.send_animation(chat_id=user_id, animation=ANIMATION['x5'])
         await bot.send_photo(chat_id=user_id, photo=IMAGES['win'], caption=trial_message_3, reply_markup=KEYBOARDS['trial_keyboard_3'])
     if query.data == 'trial_3':
-        await bot.send_video(chat_id=user_id, video=VIDEO['next_try'], caption=trial_message_4, reply_markup=KEYBOARDS['trial_keyboard_4'])
+        await bot.send_animation(chat_id=user_id, animation=ANIMATION['next_try'], caption=trial_message_4, reply_markup=KEYBOARDS['trial_keyboard_4'])
     if query.data == 'trial_4':
+        await bot.send_animation(chat_id=user_id, animation=ANIMATION['x3'])
         await bot.send_photo(chat_id=user_id, photo=IMAGES['win'], caption=trial_message_5, reply_markup=KEYBOARDS['trial_keyboard_5'])
     if query.data == 'trial_5':
         await bot.send_message(chat_id=user_id, text=trial_message_6, reply_markup=KEYBOARDS['trial_keyboard_6'])
-    if query.data == 'trial_6':
+    if query.data in ['trial_x3', 'trial_x5', 'trial_x10']:
+        imgs = ['trial_x3', 'trial_x5', 'trial_x10']
+        imgs.remove(query.data)
+        index = imgs[randint(1, 2)-1]
+        await bot.send_animation(chat_id=user_id, animation=ANIMATION[index.split('_')[1]])
         await bot.send_message(chat_id=user_id, text=trial_message_7, reply_markup=KEYBOARDS['complete_tutorial'])
     if query.data in ['complete_tutorial', 'back', 'lobby']:
         await events.entry_lobby(bot, IMAGES['lobby'], db, user_id, lobby_message, KEYBOARDS)

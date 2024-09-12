@@ -43,7 +43,7 @@ async def start_command(message: Message, state: FSMContext, command: CommandObj
     user_exists = await db.user_exists(telegram_id=user_id)
 
     if user_exists:
-        await entry_lobby(bot, IMAGES['get_name'], db, user_id, lobby_message, KEYBOARDS)
+        await entry_lobby(bot, IMAGES['lobby'], db, user_id, lobby_message, KEYBOARDS)
         return
 
     res_execute = await db.add_user(telegram_id=user_id, name=name, tag=tag, refferal_link=refferal_link, inviter_id=inviter_id)
