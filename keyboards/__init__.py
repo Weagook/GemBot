@@ -4,6 +4,8 @@ from .lobby_keyboard import create_lobby_keyboard
 from .bonus_keyboard import create_bonus_keyboard
 from .personal_keyboard import create_personal_keyboard
 from .play_keyboard import create_play_game
+from .next_try_keyboard import create_try_keyboard
+from .rules_keyboard import create_rules_keyboard
 
 def create_keyboards() -> dict:
     all_keyboards = {}
@@ -20,6 +22,8 @@ def create_keyboards() -> dict:
     all_keyboards['bonus'] = create_bonus_keyboard()
     all_keyboards['personal'] = create_personal_keyboard()
     all_keyboards['play'] = create_play_game()
+    all_keyboards['nex_try_keyboard'] = create_try_keyboard()
+    all_keyboards['rules'] = create_rules_keyboard()
 
     return all_keyboards
 

@@ -96,21 +96,18 @@ async def handle_callback(query: CallbackQuery):
     if query.data == 'trial_1':
         await bot.send_animation(chat_id=user_id, animation=ANIMATION['next_try'], caption=trial_message_2, reply_markup=KEYBOARDS['trial_keyboard_2'])
     if query.data == 'trial_2':
-        await bot.send_animation(chat_id=user_id, animation=ANIMATION['x5'])
-        await bot.send_photo(chat_id=user_id, photo=IMAGES['win'], caption=trial_message_3, reply_markup=KEYBOARDS['trial_keyboard_3'])
+        await bot.send_animation(chat_id=user_id, animation=ANIMATION['x5'], caption=trial_message_3, reply_markup=KEYBOARDS['trial_keyboard_3'])
     if query.data == 'trial_3':
         await bot.send_animation(chat_id=user_id, animation=ANIMATION['next_try'], caption=trial_message_4, reply_markup=KEYBOARDS['trial_keyboard_4'])
     if query.data == 'trial_4':
-        await bot.send_animation(chat_id=user_id, animation=ANIMATION['x3'])
-        await bot.send_photo(chat_id=user_id, photo=IMAGES['win'], caption=trial_message_5, reply_markup=KEYBOARDS['trial_keyboard_5'])
+        await bot.send_animation(chat_id=user_id, animation=ANIMATION['x3'], caption=trial_message_5, reply_markup=KEYBOARDS['trial_keyboard_5'])
     if query.data == 'trial_5':
         await bot.send_message(chat_id=user_id, text=trial_message_6, reply_markup=KEYBOARDS['trial_keyboard_6'])
     if query.data in ['trial_x3', 'trial_x5', 'trial_x10']:
         imgs = ['trial_x3', 'trial_x5', 'trial_x10']
         imgs.remove(query.data)
         index = imgs[randint(1, 2)-1]
-        await bot.send_animation(chat_id=user_id, animation=ANIMATION[index.split('_')[1]])
-        await bot.send_message(chat_id=user_id, text=trial_message_7, reply_markup=KEYBOARDS['complete_tutorial'])
+        await bot.send_animation(chat_id=user_id, animation=ANIMATION[index.split('_')[1]], caption=trial_message_7, reply_markup=KEYBOARDS['complete_tutorial'])
     if query.data in ['complete_tutorial', 'back', 'lobby']:
         await events.entry_lobby(bot, IMAGES['lobby'], db, user_id, lobby_message, KEYBOARDS)
     if query.data == 'bonus':
@@ -129,4 +126,7 @@ async def handle_callback(query: CallbackQuery):
         await events.play_roll(bot, db, user_id, KEYBOARDS, query)
     if query.data == 'payout_info':
         await events.entry_payout_info(bot, IMAGES['payout_info'], db, user_id, payout_info_message, KEYBOARDS)
-        
+    if query.data == 'next_try':
+        await events.entry_choice_play(bot, user_id, KEYBOARDS)
+    if query.data == 'rules':
+        await bot.send_message(chat_id=user_id, text=trial_message_1, reply_markup=KEYBOARDS['rules'])
